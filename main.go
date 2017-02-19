@@ -1,7 +1,18 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/Vilyan01/AlchyBot-Go/bot"
+)
 
 func main() {
-	fmt.Println("vim-go")
+	b, err := bot.NewBot()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	err = b.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
 }
