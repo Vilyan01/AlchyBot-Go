@@ -3,22 +3,25 @@ package bot
 import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/Vilyan01/AlchyBot-Go/boterrors"
+	"github.com/Vilyan01/AlchyBot-Go/parser"
 	"os"
 	"fmt"
 )
 
 var (
 	BotToken string
-	BotID string
+	BotID    string
+	p        parser.Parser
 )
 
 type DiscordBot struct {
-	dg *discordgo.Session
+	dg   *discordgo.Session
 	user *discordgo.User
 }
 
 func init() {
 	BotToken = os.Getenv("DISCORDBOTTOKEN")
+	p = parser.NewParser()
 }
 
 func NewBot() (DiscordBot,error) {
@@ -50,11 +53,10 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == BotID {
 		return
 	}
-	if m.Content == "ping" {
-		_,_ = s.ChannelMessageSend(m.ChannelID, "pong")
-	}
-	if m.Content == "Ding" {
-		_,_ = s.ChannelMessageSend(m.ChannelID, "Dang")
+
+	response := p.ParseCommand(m.Content)
+	if response != "" {
+		_,_ = s.ChannelMessageSend(m.ChannelID, response)
 	}
 }
 
