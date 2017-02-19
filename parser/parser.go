@@ -1,12 +1,12 @@
 package parser
 
 import (
-  //"fmt"
+  "strings"
 )
 
 var (
   BASECOMMAND = "!drink"
-  MIDCOMMANDS = [3]string{"random", "name", "ingredients"}
+  MIDCOMMANDS = []string{"name", "ingredients"}
 )
 
 type Parser struct {
@@ -20,8 +20,31 @@ func NewParser() Parser {
 
 func (p Parser) ParseCommand(input string) string {
   var response string
-  if input == "Dang" {
-    response = "Dong"
+  commands := strings.Split(input, " ")
+  if len(commands) >= 2 {
+    if commands[0] == BASECOMMAND {
+      if commands[1] != "random" {
+        if len(commands) >= 3 {
+          if contains(MIDCOMMANDS, commands[1]) {
+            response = "Finding drink based on "+commands[1]
+          }
+        }
+      } else {
+        // Get a random drink
+        response = "Finding a random drink, please stand by..."
+      }
+    }
   }
   return response
+}
+
+// quick contains method
+
+func contains(s []string, i string) bool {
+  for _,a := range(s) {
+    if a == i {
+      return true
+    }
+  }
+  return false
 }
